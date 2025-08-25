@@ -120,3 +120,20 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .animate-scroll-indicator {
+    animation: scrollIndicator 2s ease-in-out infinite;
+  }
+  
+  @keyframes scrollIndicator {
+    0%, 100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(8px);
+      opacity: 0.5;
+    }
+  }
+}
