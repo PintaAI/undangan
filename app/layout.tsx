@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Pixelify_Sans, Rubik_Pixels } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const pixelifySans = Pixelify_Sans({
   subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const rubikPixels = Rubik_Pixels({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-pixels",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -23,10 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" className={`${pixelifySans.variable} ${rubikPixels.variable}`}>
+      <body className="font-sans antialiased">
         {children}
       </body>
     </html>

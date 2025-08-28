@@ -3,19 +3,27 @@ import Story from '@/components/invitation/Story';
 import EventDetails from '@/components/invitation/EventDetails';
 import Gallery from '@/components/invitation/Gallery';
 import Rsvp from '@/components/invitation/Rsvp';
-import { TracingBeam } from '@/components/ui/tracing-beam';
 
-export default function Home() {
+
+interface PageProps {
+  searchParams: {
+    name?: string;
+  };
+}
+
+export default function Home({ searchParams }: PageProps) {
+  const guestName = searchParams.name ? decodeURIComponent(searchParams.name) : undefined;
+
   return (
     <div className="relative">
-      <Hero />
+      <Hero guestName={guestName} />
       
-      <TracingBeam className="px-6">
+    
         <Story />
         <EventDetails />
         <Gallery />
         <Rsvp />
-      </TracingBeam>
+     
     </div>
   );
 }
