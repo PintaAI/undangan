@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { weddingData } from "@/lib/data";
 import CharacterSelector from "./CharacterSelector";
+import { ArrowLeft } from "lucide-react";
 
 interface Character {
   id: string;
@@ -42,12 +44,6 @@ export default function Story() {
   const getCharacterStory = () => {
     if (!selectedCharacterId) return null;
     
-    if (selectedCharacterId === "both") {
-      return {
-        title: "Their Combined Story",
-        text: `This is the beautiful love story of ${weddingData.couple.name1} and ${weddingData.couple.name2}, told from both perspectives. From the moment they first met to this special day, every moment has been filled with joy, laughter, and growing love. Together, they have cherished every step of this journey and are excited to share their hearts with you.`
-      };
-    }
     
     const character = characters.find(c => c.id === selectedCharacterId);
     if (!character) return null;
@@ -62,56 +58,93 @@ export default function Story() {
   const characterStory = getCharacterStory();
 
   return (
-    <section className="min-h-screen flex flex-col px-4">
-      {!selectedCharacterId ? (
-        <div className="flex-1 flex items-center justify-center">
-          <CharacterSelector
-            characters={characters}
-            onCharacterSelect={handleCharacterSelect}
-            selectedCharacterId={selectedCharacterId || undefined}
-            onSeeStory={handleSeeStory}
-            className="py-16"
-          />
-        </div>
-      ) : (
-        <div className="flex-1 flex flex-col justify-center py-16">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-800 mb-6">
+    <section className="h-screen flex flex-col px-4 relative">
+      {/* Gradient background taking half the screen, positioned absolutely */}
+      <motion.div
+        className="absolute top-0 left-0 right-0 h-[120px] bg-gradient-to-b from-[#874c2b] to-transparent"
+        initial={{ opacity: 0, y: -50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ amount: 0.1 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+      />
+      
+      {/* Content area */}
+      <div className="flex-1 flex  justify-center relative z-10">
+        {!selectedCharacterId ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ amount: 0.2 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <CharacterSelector
+              characters={characters}
+              onCharacterSelect={handleCharacterSelect}
+              selectedCharacterId={selectedCharacterId || undefined}
+              onSeeStory={handleSeeStory}
+              className="py-16"
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            className="flex flex-col items-center justify-center py-16 w-full max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <motion.div
+              className="text-center mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            >
+              <motion.h2
+                className="text-4xl md:text-5xl font-serif font-bold text-gray-800 mb-6"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+              >
                 {characterStory?.title}
-              </h2>
-            </div>
-            <div className="text-center">
-              <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+              </motion.h2>
+            </motion.div>
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+            >
+              <motion.p
+                className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
+              >
                 {characterStory?.text}
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
             
             {/* Add a way to go back to character selection */}
-            <div className="text-center mt-12">
-              <button
+            <motion.div
+              className="text-center mt-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.0, ease: "easeOut" }}
+            >
+              <motion.button
                 onClick={() => setSelectedCharacterId(null)}
-                className="inline-flex items-center px-6 py-3 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition-colors duration-300"
+                className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-full transition-colors duration-300"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
-                <svg
-                  className="w-5 h-5 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
+                <ArrowLeft className="w-5 h-5 mr-2" />
                 Choose Different Perspective
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        )}
+      </div>
     </section>
   );
 }

@@ -1,129 +1,78 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { weddingData } from "@/lib/data";
-import { X, Image as ImageIcon, Heart, Camera, Star } from "lucide-react";
+import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
 
 export default function Gallery() {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
-  const openLightbox = (imageSrc: string) => {
-    setSelectedImage(imageSrc);
-  };
-
-  const closeLightbox = () => {
-    setSelectedImage(null);
-  };
+  // Create testimonial data using PNG images from public folder
+  const testimonials = [
+    {
+      quote: `Perjalanan cinta kami dimulai dari pertemuan pertama yang tak terduga`,
+      name: `${weddingData.couple.name1} & ${weddingData.couple.name2}`,
+      designation: "Awal Kisah Kami",
+      src: "/character/nina.png"
+    },
+    {
+      quote: `Setiap momen bersama adalah anugerah yang tak ternilai`,
+      name: `${weddingData.couple.name1} & ${weddingData.couple.name2}`,
+      designation: "Momen Bahagia",
+      src: "/character/rores.png"
+    },
+    {
+      quote: `Dari hati ini, kami akan selalu bersama dalam setiap langkah`,
+      name: `${weddingData.couple.name1} & ${weddingData.couple.name2}`,
+      designation: "Janji Abadi",
+      src: "/character/nina-card.png"
+    },
+    {
+      quote: `Cinta adalah perjalanan terindah yang kami jalani bersama`,
+      name: `${weddingData.couple.name1} & ${weddingData.couple.name2}`,
+      designation: "Perjalanan Cinta",
+      src: "/character/rores-card.png"
+    }
+  ];
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-primary/10">
-      <div className="max-w-7xl mx-auto">
+    <section className="min-h-[calc(100vh-59px)]  flex flex-col py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="w-full max-w-7xl mx-auto h-full flex flex-col">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ amount: 0.3 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-center flex-shrink-0 mb-6 sm:mb-8 lg:mb-12"
         >
-          <h2 className="text-4xl font-bold text-foreground mb-4">
+          <motion.h2
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2 sm:mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ amount: 0.3 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+          >
             {weddingData.gallery.title}
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p
+            className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-xl lg:max-w-2xl mx-auto px-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ amount: 0.3 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+          >
             Capturing our most precious moments together
-          </p>
+          </motion.p>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          className="flex-1 flex items-center justify-center w-full"
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ amount: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
         >
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((index) => {
-            const icons = [ImageIcon, Heart, Camera, Star];
-            const IconComponent = icons[index % icons.length];
-            
-            return (
-              <motion.div
-                key={index}
-                className="relative group cursor-pointer overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-primary/10 to-primary/20"
-                whileHover={{ scale: 1.03 }}
-                layout
-              >
-                <motion.div
-                  className="w-full h-64 sm:h-72 md:h-80 flex items-center justify-center"
-                  onClick={() => openLightbox(`icon-${index}`)}
-                >
-                  <IconComponent className="h-20 w-20 text-primary" />
-                </motion.div>
-              <motion.div
-                className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center"
-                initial={{ opacity: 0 }}
-                whileHover={{ opacity: 1 }}
-              >
-                <motion.div
-                  className="bg-card bg-opacity-90 rounded-full p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ opacity: 1, scale: 1 }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-foreground"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </motion.div>
-              </motion.div>
-            </motion.div>
-          );
-          })}
+          <AnimatedTestimonials testimonials={testimonials} autoplay={true} />
         </motion.div>
       </div>
-
-      {/* Lightbox Modal */}
-      {selectedImage && (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          onClick={closeLightbox}
-        >
-          <motion.div
-            className="relative max-w-4xl max-h-[90vh] w-full"
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <motion.div
-              className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg"
-            >
-              {selectedImage && (
-                (() => {
-                  const icons = [ImageIcon, Heart, Camera, Star];
-                  const IconComponent = icons[parseInt(selectedImage.split('-')[1]) % icons.length];
-                  return <IconComponent className="h-32 w-32 text-primary" />;
-                })()
-              )}
-            </motion.div>
-            <motion.button
-              className="absolute top-4 right-4 p-2 bg-card bg-opacity-20 backdrop-blur-sm rounded-full hover:bg-opacity-30 transition-all duration-300"
-              onClick={closeLightbox}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <X className="h-6 w-6 text-white" />
-            </motion.button>
-          </motion.div>
-        </motion.div>
-      )}
     </section>
   );
 }

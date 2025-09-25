@@ -11,7 +11,7 @@ export const weddingData = {
   },
   events: [
     {
-      title: "Upacara Pernikahan",
+      title: "Akad",
       time: "14:00 WIB",
       venue: "Katedral St. Paul",
       address: "123 Jalan Utama, Kota Anytown, Indonesia",

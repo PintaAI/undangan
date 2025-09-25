@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { CardWithCorners } from "@/components/ui/card-with-corners";
+import { BookOpen } from "lucide-react";
 
 interface Character {
   id: string;
@@ -23,7 +25,6 @@ interface CharacterSelectorProps {
 export default function CharacterSelector({
   characters,
   onCharacterSelect,
-  selectedCharacterId,
   className,
  
 }: CharacterSelectorProps) {
@@ -32,8 +33,8 @@ export default function CharacterSelector({
 
   return (
     <div className={cn("w-full max-w-6xl mx-auto", className)}>
-      <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-4">
+      <div className="text-center mb-8">
+        <h2 className="text-4xl md:text-5xl font-bold text-foreground ">
           Love Story
         </h2>
         <p className="text-lg md:text-xl text-muted-foreground">
@@ -42,7 +43,7 @@ export default function CharacterSelector({
       </div>
       
       <div className="relative">
-        <div className="flex  items-center justify-center gap-6">
+        <div className="flex  items-center justify-center gap-2 md:gap-4">
           <AnimatePresence>
             {characters.map((character) => {
               const shouldHide = tempSelectedId && tempSelectedId !== character.id;
@@ -78,14 +79,19 @@ export default function CharacterSelector({
                   layoutId={isSelected ? `selected-${character.id}` : undefined}
                 >
                   {/* Character Card */}
-                  <div
+                  <CardWithCorners
                     className={cn(
-                      "bg-card rounded-2xl shadow-lg p-1 flex flex-col justify-center border-2 transition-all duration-300 w-47 h-[500px] mb-2 cursor-pointer",
+                      "bg-card/50 backdrop-blur-md border border-white/20 p-1 flex flex-col justify-center transition-all duration-300 w-43 md:w-50 h-[400px] mb-2 cursor-pointer",
                       tempSelectedId === character.id
                         ? "border-primary shadow-xl"
                         : "border-border hover:border-primary/50",
                       isHovered === character.id && "shadow-xl"
                     )}
+                    style={{
+                      boxShadow: tempSelectedId === character.id
+                        ? "0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.2)"
+                        : "0 0 20px rgba(0, 0, 0, 0.1)"
+                    }}
                     onClick={() => {
                       // Toggle selection: if already selected, deselect it
                       if (tempSelectedId === character.id) {
@@ -100,15 +106,18 @@ export default function CharacterSelector({
                     {/* Avatar */}
                     <div className="flex justify-center mb-4">
                       <div className="relative">
-                        <div className="w-40 h-50 rounded-full flex items-center justify-center overflow-hidden">
+                        <div className="w-20 h-20 rounded-full flex items-center justify-center overflow-hidden">
                           <Image
                             src={isSelected ? `/character/${character.id}_jump.png` : character.avatar}
                             alt={character.name}
                             fill
                             className={cn(
-                              "object-cover",
+                              "object-cover transition-all duration-300",
                               character.id === "nina" && "transform scale-x-[-1]"
                             )}
+                            style={{
+                              filter: isSelected ? "drop-shadow(0 0 12px rgba(59, 130, 246, 0.8)) drop-shadow(0 0 24px rgba(59, 130, 246, 0.4))" : "none"
+                            }}
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
                               target.style.display = "none";
@@ -124,40 +133,19 @@ export default function CharacterSelector({
                           />
                         </div>
                         
-                        {/* Selection indicator */}
-                        <AnimatePresence>
-                          {tempSelectedId === character.id && (
-                            <motion.div
-                              className="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center"
-                              initial={{ scale: 0, opacity: 0 }}
-                              animate={{ scale: 1, opacity: 1 }}
-                              exit={{ scale: 0, opacity: 0 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              <svg
-                                className="w-5 h-5 text-white"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
                       </div>
                     </div>
 
                     {/* Character Name */}
-                    <h3 className="text-lg font-bold text-foreground text-center">
+                    <h3 className="text-lg font-bold text-foreground text-center mb-2">
                       {character.name}
                     </h3>
-                  </div>
+                    
+                    {/* Character Description */}
+                    <p className="text-sm text-muted-foreground text-center px-2 line-clamp-2">
+                      {character.description}
+                    </p>
+                  </CardWithCorners>
 
                   {/* Decorative elements */}
                   <motion.div
@@ -189,47 +177,22 @@ export default function CharacterSelector({
           onClick={() => {
             if (tempSelectedId) {
               onCharacterSelect(tempSelectedId);
-            } else {
-              onCharacterSelect("both");
             }
           }}
           className={cn(
-            "inline-flex items-center px-8 py-3 rounded-full transition-colors duration-300 hover:shadow-lg",
+            "inline-flex items-center justify-center px-8 py-3 rounded-full transition-colors duration-300 hover:shadow-lg min-w-[250px]",
             tempSelectedId
-              ? "bg-primary text-primary-foreground hover:bg-primary/90"
-              : "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
+              ? "bg-primary text-primary-foreground"
+              : "bg-primary/50 text-muted  border border-border"
           )}
+          disabled={!tempSelectedId}
         >
-          <svg
-            className="w-5 h-5 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-            />
-          </svg>
-          {tempSelectedId ? "See Story" : "Skip to Combined Story"}
+          <BookOpen className="w-5 h-5 mr-2" />
+          {tempSelectedId ? "See Story" : "Select a Character"}
         </button>
       </div>
 
 
-      {/* Selection hint */}
-      {selectedCharacterId && selectedCharacterId !== "both" && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mt-8"
-        >
-          <p className="text-lg text-muted-foreground">
-            Great choice! You'll now see the story from {characters.find(c => c.id === selectedCharacterId)?.name}'s perspective.
-          </p>
-        </motion.div>
-      )}
     </div>
   );
 }

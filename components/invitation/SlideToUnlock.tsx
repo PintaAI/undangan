@@ -1,8 +1,15 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useRef, useCallback, useEffect, memo } from 'react';
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  animate,
+  MotionValue,
+} from 'framer-motion';
 import { Mail } from 'lucide-react';
+import Image from 'next/image';
 
 
 interface SlideToUnlockProps {
@@ -16,51 +23,49 @@ export default function SlideToUnlock({
   onUnlock,
   threshold = 80,
   className = '',
-  guestName
-}: SlideToUnlockProps = {}) {
+  guestName = 'Honored Guest'
+}: SlideToUnlockProps) {
   // Animation Constants
   const UNLOCK_DELAY = 250; // ms
   const UNLOCK_DURATION = 1000; // ms
   const RESET_DURATION = 300; // ms
 
-  const [progress, setProgress] = useState(15); // Start at 15% for better UX
+  const progress = useMotionValue(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isFading, setIsFading] = useState(false);
-  const [isResetting, setIsResetting] = useState(false);
-  const [clouds, setClouds] = useState<Array<{id: number, x: number, y: number, scale: number, blur: number, speed: number}>>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const knobRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
 
+  // Transform hooks - moved before conditional returns
+  const scaleX = useTransform(progress, [0, 100], [0, 1]);
+  const translateX = useTransform(progress, [0, 100], ['0%', '-100%']);
+  const left = useTransform(progress, (p) => `${p}%`);
+
   // Clean up animation frame on unmount
   useEffect(() => {
+    const animationId = animationRef.current;
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
+      if (animationId) {
+        cancelAnimationFrame(animationId);
       }
     };
   }, []);
 
-  // Generate clouds for parallax effect
+  // Disable scroll when component is active, re-enable on unmount
   useEffect(() => {
-    const generateClouds = () => {
-      const newClouds = [];
-      for (let i = 0; i < 15; i++) {
-        newClouds.push({
-          id: i,
-          x: Math.random() * 100,
-          y: 50 + Math.random() * 50, // Start clouds in the lower half
-          scale: 0.5 + Math.random() * 1.5,
-          blur: 0 + Math.random() * 4,
-          speed: 0.5 + Math.random() * 2 // Random speed between 0.5 and 2.5
-        });
-      }
-      setClouds(newClouds);
-    };
+    // Disable scrolling when component is mounted and not unlocked
+    if (!isUnlocked) {
+      document.body.style.overflow = 'hidden';
+    }
 
-    generateClouds();
-  }, []);
+    return () => {
+      // Re-enable scrolling when component unmounts
+      document.body.style.overflow = '';
+    };
+  }, [isUnlocked]);
+
 
   const getMax = useCallback(() => {
     const container = containerRef.current;
@@ -79,9 +84,9 @@ export default function SlideToUnlock({
     const max = getMax();
     const clampedX = Math.max(rect.left, Math.min(clientX, rect.left + max));
     const relative = clampedX - rect.left;
-    const pct = Math.round((relative / max) * 100);
-    setProgress(pct);
-  }, [getMax]);
+    const pct = (relative / max) * 100;
+    progress.set(pct);
+  }, [getMax, progress]);
 
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -105,25 +110,25 @@ export default function SlideToUnlock({
       console.warn('Failed to release pointer capture:', error);
     }
 
-    if (progress >= threshold) {
-      setProgress(100);
-      
-      // Start the unlock fade-out sequence
-      setTimeout(() => {
-        setIsFading(true);
-        
-        // Unmount the component after the animation is complete
-        setTimeout(() => {
-          setIsUnlocked(true);
-          onUnlock?.();
-        }, UNLOCK_DURATION);
-      }, UNLOCK_DELAY);
-
+    if (progress.get() >= threshold) {
+      animate(progress, 100, {
+        duration: RESET_DURATION / 1000,
+        ease: 'easeOut',
+        onComplete: () => {
+          setTimeout(() => {
+            setIsFading(true);
+            setTimeout(() => {
+              setIsUnlocked(true);
+              onUnlock?.();
+            }, UNLOCK_DURATION);
+          }, UNLOCK_DELAY);
+        },
+      });
     } else {
-      // Start the reset animation
-      setIsResetting(true);
-      setProgress(15);
-      setTimeout(() => setIsResetting(false), RESET_DURATION);
+      animate(progress, 0, {
+        duration: RESET_DURATION / 1000,
+        ease: 'easeOut',
+      });
     }
   }, [isDragging, progress, threshold, onUnlock, UNLOCK_DELAY, UNLOCK_DURATION, RESET_DURATION]);
 
@@ -131,53 +136,22 @@ export default function SlideToUnlock({
     handlePointerUp(e);
   }, [handlePointerUp]);
 
-  if (isUnlocked) return null;
+  // Don't render if unlocked, but keep hooks consistent
+  if (isUnlocked) {
+    return null;
+  }
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-end justify-center bg-gradient-to-b from-blue-900/90 to-blue-400 backdrop-blur-sm transition-all ease-in ${
-        isFading ? 'opacity-0 backdrop-blur-none' : 'opacity-100 backdrop-blur-sm'
+      className={`fixed inset-0 z-50 flex items-end justify-center bg-gradient-to-b from-primary/80 to-black/20 transition-all ease-in ${
+        isFading
+          ? 'opacity-0 backdrop-blur-none'
+          : 'opacity-100 backdrop-blur-sm'
       } ${className}`}
       style={{ transitionDuration: `${UNLOCK_DURATION}ms` }}
     >
       {/* Cloud parallax background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <AnimatePresence>
-          {clouds.map((cloud) => (
-            <motion.img
-              key={cloud.id}
-              src="/cloud.png"
-              alt="Cloud"
-              className="absolute opacity-30"
-              style={{
-                left: `${cloud.x}%`,
-                top: `${cloud.y}%`,
-                width: `${30 * cloud.scale}%`,
-                height: 'auto',
-                filter: `blur(${cloud.blur}px)`,
-                transform: `translate(-50%, -50%) scale(${cloud.scale})`,
-              }}
-              initial={{ opacity: 0, y: 0 }}
-              animate={{
-                opacity: isFading ? 0 : 0.3,
-                y: isFading ? -300 * cloud.speed : [0, -5, 0],
-                filter: isFading ? `blur(${cloud.blur + 12}px)` : `blur(${cloud.blur}px)`,
-              }}
-              transition={{
-                opacity: isFading ? { duration: Math.max(0.1, (UNLOCK_DURATION / 1000) / cloud.speed) } : { duration: 0 },
-                y: {
-                  duration: isFading ? Math.max(0.1, (UNLOCK_DURATION / 1000) / cloud.speed) : 3,
-                  ease: 'easeInOut',
-                  repeat: isFading ? 0 : Infinity,
-                  repeatType: 'reverse' as const
-                },
-                filter: isFading ? { duration: Math.max(0.1, (UNLOCK_DURATION / 1000) / cloud.speed) } : { duration: 0 }
-              }}
-      
-            />
-          ))}
-        </AnimatePresence>
-      </div>
+      <CloudLayer isFading={isFading} UNLOCK_DURATION={UNLOCK_DURATION} />
       
       {/* Welcome message at the top */}
       {guestName && (
@@ -228,56 +202,63 @@ export default function SlideToUnlock({
           role="slider"
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-valuenow={progress}
+          aria-valuenow={progress.get()}
           aria-label="Slide to unlock"
-          aria-valuetext={`${progress}%`}
+          aria-valuetext={`${Math.round(progress.get())}%`}
         >
           {/* Progress bar with smooth transitions */}
-          <div
+          <motion.div
             aria-hidden
-            className={`absolute top-0 left-0 h-full rounded-full ${
-              isDragging || isResetting ? 'transition-none' : 'transition-all duration-300 ease-in'
-            }`}
-            style={{ width: `${progress}%` }}
+            className="absolute top-0 left-0 h-full rounded-full bg-blue-500/50"
+            style={{
+              scaleX: scaleX,
+              transformOrigin: 'left',
+              willChange: 'transform',
+            }}
           />
 
           {/* Knob with enhanced visual feedback */}
-          <div
+          <motion.div
             ref={knobRef}
-            className={`absolute top-1/2 w-15 h-15 flex items-center justify-center transform -translate-y-1/2 ${
-              isDragging
-                ? 'scale-110'
-                : isResetting
-                  ? 'transition-transform duration-300 ease-in'
-                  : 'transition-transform duration-200 ease-in hover:scale-105'
-            }`}
+            className="absolute top-1/2 w-15 h-4 flex items-center justify-center"
             style={{
-              left: `${progress}%`,
-              transform: 'translate(-50%)',
-              touchAction: 'none',
+              translateX: translateX ,
+              left: left,
+              scale: isDragging ? 1.2 : 1,
+              willChange: 'transform',
+            }}
+            transition={{
+              scale: {
+                duration: RESET_DURATION / 1000,
+                ease: 'easeOut',
+              },
             }}
           >
-            <img
+            <Image
               src="/knob.png"
               alt="Slide knob"
+              width={128}
+              height={128}
+              priority
               className="object-contain scale-x-[-1] mb-12"
             />
-          </div>
+          </motion.div>
 
-          
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="text-white font-medium text-sm drop-shadow-lg">
-              {Math.round(progress)}%
-            </span>
+            <motion.span
+              className="text-white font-medium text-sm drop-shadow-lg"
+            >
+              <ProgressLabel progress={progress} />
+            </motion.span>
           </div>
 
           {/* Treasure image at the end of slider */}
-          <div
-            className="absolute top-1/2 right-6 transform -translate-y-1/2 translate-x-1/2 pointer-events-none"
-          >
-            <img
+          <div className="absolute top-1/2 right-6 transform -translate-y-1/2 translate-x-1/2 pointer-events-none">
+            <Image
               src="/treasure.png"
               alt="Treasure"
+              width={32}
+              height={32}
               className="w-8 h-8 object-contain"
             />
           </div>
@@ -286,4 +267,104 @@ export default function SlideToUnlock({
       </motion.div>
     </div>
   );
+}
+
+// Cloud Layer Component
+interface Cloud {
+  id: number;
+  x: number;
+  y: number;
+  scale: number;
+  blur: number;
+  speed: number;
+}
+
+const CloudLayer = memo(function CloudLayer({
+  isFading,
+  UNLOCK_DURATION,
+}: {
+  isFading: boolean;
+  UNLOCK_DURATION: number;
+}) {
+  const cloudsRef = useRef<Cloud[]>([]);
+
+  useEffect(() => {
+    const generateClouds = () => {
+      const isMobile = window.innerWidth < 768;
+      const cloudCount = isMobile ? 8 : 15;
+      const newClouds: Cloud[] = [];
+      for (let i = 0; i < cloudCount; i++) {
+        newClouds.push({
+          id: i,
+          x: Math.random() * 100,
+          y: 50 + Math.random() * 50,
+          scale: 0.5 + Math.random() * 1.5,
+          blur: 0 + Math.random() * 4,
+          speed: 0.5 + Math.random() * 2,
+        });
+      }
+      cloudsRef.current = newClouds;
+    };
+    generateClouds();
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {cloudsRef.current.map((cloud) => (
+        <motion.div
+          key={cloud.id}
+          className="absolute opacity-30"
+          style={{
+            left: `${cloud.x}%`,
+            top: `${cloud.y}%`,
+            width: `${30 * cloud.scale}%`,
+            height: 'auto',
+            willChange: 'transform, filter',
+          }}
+          initial={{ opacity: 0, y: 0 }}
+          animate={{
+            opacity: isFading ? 0 : 0.3,
+            y: isFading ? -300 * cloud.speed : [0, -5, 0],
+            filter: isFading
+              ? `blur(${cloud.blur + 12}px)`
+              : `blur(${cloud.blur}px)`,
+          }}
+          transition={{
+            opacity: {
+              duration: isFading
+                ? Math.max(0.1, UNLOCK_DURATION / 1000 / cloud.speed)
+                : 0,
+            },
+            y: {
+              duration: isFading
+                ? Math.max(0.1, UNLOCK_DURATION / 1000 / cloud.speed)
+                : 3,
+              ease: 'easeInOut',
+              repeat: isFading ? 0 : Infinity,
+              repeatType: 'reverse',
+            },
+            filter: {
+              duration: isFading
+                ? Math.max(0.1, UNLOCK_DURATION / 1000 / cloud.speed)
+                : 0,
+            },
+          }}
+        >
+          <Image
+            src="/cloud.png"
+            alt="Cloud"
+            width={512}
+            height={256}
+            priority
+            className="object-contain"
+          />
+        </motion.div>
+      ))}
+    </div>
+  );
+});
+
+function ProgressLabel({ progress }: { progress: MotionValue<number> }) {
+  const label = useTransform(progress, (p) => `${Math.round(p)}%`);
+  return <motion.span>{label}</motion.span>;
 }
