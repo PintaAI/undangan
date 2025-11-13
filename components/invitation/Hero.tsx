@@ -114,7 +114,7 @@ export default function Hero() {
 
 
 
-      <div className="absolute bottom-38 left-10 w-[70px] h-[70px] z-20">
+      <div className="absolute bottom-38 left-10 w-[100px] h-[70px] z-20">
         <Image
           src="/hero/char.png"
           alt="UI"

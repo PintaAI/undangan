@@ -58,15 +58,8 @@ export default function Story() {
   const characterStory = getCharacterStory();
 
   return (
-    <section className="h-screen flex flex-col px-4 relative">
-      {/* Gradient background taking half the screen, positioned absolutely */}
-      <motion.div
-        className="absolute top-0 left-0 right-0 h-[120px] bg-gradient-to-b from-[#874c2b] to-transparent"
-        initial={{ opacity: 0, y: -50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ amount: 0.1 }}
-        transition={{ duration: 1, ease: "easeOut" }}
-      />
+    <section className="h-screen bg-background rounded-t-2xl flex flex-col px-4 relative">
+
       
       {/* Content area */}
       <div className="flex-1 flex  justify-center relative z-10">

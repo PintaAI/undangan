@@ -1,6 +1,6 @@
 "use client"
 import { weddingData } from "@/lib/data";
-import { Clock, MapPin, ExternalLink } from "lucide-react";
+import { Clock, MapPin, } from "lucide-react";
 import {
   CardWithCorners,
   CardContent,

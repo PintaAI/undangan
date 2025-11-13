@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence, PanInfo } from "motion/react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
+import Image from "next/image";
 
 type Testimonial = {
   quote: string;
@@ -20,9 +21,9 @@ export const AnimatedTestimonials = ({
   const constraintsRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setActive((prev) => (prev + 1) % testimonials.length);
-  };
+  }, [testimonials.length]);
 
   const handlePrev = () => {
     setActive((prev) => (prev - 1 + testimonials.length) % testimonials.length);
@@ -32,7 +33,7 @@ export const AnimatedTestimonials = ({
     return index === active;
   };
 
-  const handleDragEnd = (event: any, { offset, velocity }: PanInfo) => {
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, { offset, velocity }: PanInfo) => {
     const swipe = swipePower(offset.x, velocity.x);
 
     if (swipe < -swipeConfidenceThreshold) {
@@ -58,7 +59,7 @@ export const AnimatedTestimonials = ({
         }
       };
     }
-  }, [autoplay]);
+  }, [autoplay, handleNext]);
 
   const resetTimer = () => {
     if (intervalRef.current) {
@@ -113,7 +114,7 @@ export const AnimatedTestimonials = ({
                   onDragEnd={handleDragEnd}
                 >
                   <div className="relative h-full w-full rounded-lg overflow-hidden">
-                    <img
+                    <Image
                       src={testimonial.src}
                       alt={testimonial.name}
                       width={500}

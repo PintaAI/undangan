@@ -1,4 +1,4 @@
-import Hero from '@/components/invitation/Hero';
+import Parallax from '@/components/Parallax';
 import Story from '@/components/invitation/Story';
 import EventDetails from '@/components/invitation/EventDetails';
 import Gallery from '@/components/invitation/Gallery';
@@ -9,6 +9,7 @@ import SlideToUnlock from '@/components/invitation/SlideToUnlock';
 interface PageProps {
   searchParams: Promise<{
     name?: string;
+    id?: string;
   }>;
 }
 
@@ -17,23 +18,23 @@ export default async function Home({ searchParams }: PageProps) {
   const guestName = resolvedSearchParams.name ? decodeURIComponent(resolvedSearchParams.name) : undefined;
 
   return (
-    <div className="snap-y snap-mandatory overflow-y-scroll h-screen ">
-      <div className="snap-always snap-center  ">
-        <Hero />
+    <div>
+      <div className="bg-background">
+        <Parallax title="Nina & Rores Wedding's" />
       </div>
-      <SlideToUnlock guestName={guestName} />
-      <div className="snap-always snap-center ">
+      <div className="relative z-51">
+        <SlideToUnlock guestName={guestName} />
+      </div>
+      <div className="relative z-50">
         <Story />
       </div>
-      <div className="snap-always snap-center ">
+      <div className="relative z-50">
         <Gallery />
-       
       </div>
-      <div className="snap-always snap-center ">
-        
-         <EventDetails />
+      <div className="relative z-50 bg-background">
+        <EventDetails />
       </div>
-      <div className="snap-always snap-center">
+      <div className="relative z-50 bg-background">
         <Rsvp />
       </div>
     </div>
