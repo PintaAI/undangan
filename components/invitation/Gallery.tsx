@@ -5,31 +5,25 @@ import { weddingData } from "@/lib/data";
 import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
 
 export default function Gallery() {
-  // Create testimonial data using PNG images from public folder
+  // Create testimonial data using gallery images from public folder
   const testimonials = [
     {
       quote: `Perjalanan cinta kami dimulai dari pertemuan pertama yang tak terduga`,
       name: `${weddingData.couple.name1} & ${weddingData.couple.name2}`,
       designation: "Awal Kisah Kami",
-      src: "/character/nina.png"
+      src: "/galery/IMG_5556.jpeg"
     },
     {
       quote: `Setiap momen bersama adalah anugerah yang tak ternilai`,
       name: `${weddingData.couple.name1} & ${weddingData.couple.name2}`,
       designation: "Momen Bahagia",
-      src: "/character/rores.png"
+      src: "/galery/IMG_5559.jpeg"
     },
     {
       quote: `Dari hati ini, kami akan selalu bersama dalam setiap langkah`,
       name: `${weddingData.couple.name1} & ${weddingData.couple.name2}`,
       designation: "Janji Abadi",
-      src: "/character/nina-card.png"
-    },
-    {
-      quote: `Cinta adalah perjalanan terindah yang kami jalani bersama`,
-      name: `${weddingData.couple.name1} & ${weddingData.couple.name2}`,
-      designation: "Perjalanan Cinta",
-      src: "/character/rores-card.png"
+      src: "/galery/IMG_5561.jpeg"
     }
   ];
 
