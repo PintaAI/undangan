@@ -23,6 +23,10 @@ export default function Rsvp() {
   const searchParams = useSearchParams();
   const guestId = searchParams.get('id');
   const guestNameFromUrl = searchParams.get('name');
+  // We can capture the side if needed for analytics or form data,
+  // though currently not used in the form display
+  // const guestSide = searchParams.get('side');
+
   const [formData, setFormData] = useState({
     fullName: guestNameFromUrl ? decodeURIComponent(guestNameFromUrl) : "",
     attendance: "",

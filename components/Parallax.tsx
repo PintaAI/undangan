@@ -91,7 +91,10 @@ const Parallax = ({ title = "add text here" }: ParallaxProps) => {
       {/* Mohon Doa Restu text at the bottom */}
       <div className="fixed bottom-9 left-0 right-0 opacity-50 text-center">
         <p className="text-white text-lg md:text-xl font-medium px-8 mx-4 py-8 rounded-lg backdrop-blur-sm" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
-          Mohon Doa Restu, Semoga lancar sampai hari Pernikahan !
+          وَالَّذِيْنَ يَقُوْلُوْنَ رَبَّنَا هَبْ لَنَا مِنْ اَزْوَاجِنَا وَذُرِّيّٰتِنَا قُرَّةَ اَعْيُنٍ وَّاجْعَلْنَا لِلْمُتَّقِيْنَ اِمَامًا
+        </p>
+        <p className="text-white text-sm md:text-base font-light px-8 mx-4 py-2 rounded-lg backdrop-blur-sm" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+          "Dan orang-orang yang berkata, 'Ya Tuhan kami, anugerahkanlah kepada kami pasangan kami dan keturunan kami sebagai penyenang hati (kami), dan jadikanlah kami pemimpin bagi orang-orang yang bertakwa'."
         </p>
       </div>
     </>

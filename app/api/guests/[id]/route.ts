@@ -6,6 +6,7 @@ export const runtime = 'edge';
 interface Guest {
   id: string;
   name: string;
+  side?: 'male' | 'female';
   createdAt: string;
   updatedAt: string;
 }
@@ -17,7 +18,7 @@ export async function PUT(
   try {
     const { id: guestId } = await params;
     const body = await request.json();
-    const { name } = body;
+    const { name, side } = body;
 
     if (!name) {
       return NextResponse.json(
@@ -47,6 +48,7 @@ export async function PUT(
     const updatedGuest: Guest = {
       ...existingGuest,
       name,
+      side: side || existingGuest.side || 'female',
       updatedAt: new Date().toISOString(),
     };
 

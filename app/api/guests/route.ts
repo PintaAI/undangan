@@ -6,6 +6,7 @@ export const runtime = 'edge';
 interface Guest {
   id: string;
   name: string;
+  side?: 'male' | 'female';
   createdAt: string;
   updatedAt: string;
 }
@@ -87,7 +88,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name } = body;
+    const { name, side } = body;
 
     if (!name) {
       return NextResponse.json(
@@ -102,6 +103,7 @@ export async function POST(request: Request) {
     const guest: Guest = {
       id,
       name,
+      side: side || 'female', // Default to female if not specified
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };

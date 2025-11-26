@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CardWithCorners, CardContent, CardHeader } from "@/components/ui/card-with-corners";
 import GuestManager from "@/components/admin/GuestManager";
+import EventManager from "@/components/admin/EventManager";
 import { Users, MessageSquare, Calendar, TrendingUp } from "lucide-react";
 
 interface Rsvp {
@@ -100,9 +101,10 @@ export default function AdminDashboard() {
       </motion.div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto">
           <TabsTrigger value="overview">Ringkasan</TabsTrigger>
           <TabsTrigger value="guests">Tamu</TabsTrigger>
+          <TabsTrigger value="events">Acara</TabsTrigger>
           <TabsTrigger value="rsvps">RSVP</TabsTrigger>
         </TabsList>
 
@@ -214,6 +216,16 @@ export default function AdminDashboard() {
             animate={{ opacity: 1, y: 0 }}
           >
             <GuestManager />
+          </motion.div>
+        </TabsContent>
+
+        {/* Events Tab */}
+        <TabsContent value="events">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <EventManager />
           </motion.div>
         </TabsContent>
 

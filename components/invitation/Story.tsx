@@ -58,7 +58,7 @@ export default function Story() {
   const characterStory = getCharacterStory();
 
   return (
-    <section className="h-screen bg-background rounded-t-2xl border-t-2 border-black/40 flex flex-col px-4 relative">
+    <section className="h-screen rounded-t-2xl flex flex-col px-4 relative">
 
       
       {/* Content area */}

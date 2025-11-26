@@ -11,22 +11,56 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from 'next/navigation';
 
 export default function EventDetails() {
+  const searchParams = useSearchParams();
+  const guestSide = searchParams.get('side') || 'female'; // Default to female if not specified
+  const [events, setEvents] = useState(weddingData.events);
+  
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const response = await fetch('/api/config');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.events && Array.isArray(data.events)) {
+            setEvents(data.events);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load dynamic event config", error);
+      }
+    };
+    
+    fetchConfig();
+  }, []);
+
+  // Filter events based on guest side
+  const filteredEvents = events.filter(event =>
+    !event.side || event.side === guestSide
+  );
+
   // Extract day and month from wedding date (e.g., "14 Desember 2025" -> day: 14, month: "Desember")
   const weddingDateParts = weddingData.weddingDate.split(' ');
   const weddingDay = parseInt(weddingDateParts[0]);
   const weddingMonth = weddingDateParts[1]; // Get the month name
-  const [displayCounts, setDisplayCounts] = useState(Array(weddingData.events.length).fill(0));
-  const currentCountsRef = useRef(Array(weddingData.events.length).fill(0));
+  const [displayCounts, setDisplayCounts] = useState<number[]>([]);
+  const currentCountsRef = useRef<number[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, margin: "-20%" });
 
   useEffect(() => {
-    if (isInView) {
+    // Reset counts when events change
+    setDisplayCounts(Array(filteredEvents.length).fill(0));
+    currentCountsRef.current = Array(filteredEvents.length).fill(0);
+  }, [filteredEvents.length]);
+
+  useEffect(() => {
+    if (isInView && filteredEvents.length > 0) {
       // Initialize with random numbers for each card
-      const initialCounts = Array(weddingData.events.length).fill(0).map(() =>
+      const initialCounts = Array(filteredEvents.length).fill(0).map(() =>
         Math.floor(Math.random() * (weddingDay - 1)) + 1
       );
       currentCountsRef.current = initialCounts;
@@ -48,18 +82,18 @@ export default function EventDetails() {
             clearInterval(intervalRef.current);
           }
         } else {
-          currentCountsRef.current = newCounts;
-          setDisplayCounts([...newCounts]);
+            currentCountsRef.current = newCounts;
+            setDisplayCounts([...newCounts]);
+          }
+        }, 100);
+      } else {
+        // Clear interval and reset
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
         }
-      }, 100);
-    } else {
-      // Clear interval and reset
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+        setDisplayCounts(Array(filteredEvents.length).fill(0));
       }
-      setDisplayCounts(Array(weddingData.events.length).fill(0));
-    }
-  }, [isInView, weddingDay]);
+    }, [isInView, weddingDay, filteredEvents.length]);
 
   return (
     <section className="min-h-screen max-h-screen flex flex-col  py-8 px-4 sm:px-6">
@@ -85,7 +119,7 @@ export default function EventDetails() {
         </motion.div>
         
         <div ref={ref} className="grid md:grid-cols-2 gap-8 sm:gap-12 mt-9 sm:mt-20">
-          {weddingData.events.map((event, index) => (
+          {filteredEvents.map((event, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 80, scale: 0.9 }}

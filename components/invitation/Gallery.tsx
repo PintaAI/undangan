@@ -28,7 +28,7 @@ export default function Gallery() {
   ];
 
   return (
-    <section className="min-h-[calc(100vh-59px)] bg-background flex flex-col py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <section className="min-h-[calc(100vh-59px)] bg-transparent flex flex-col py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div className="w-full max-w-7xl mx-auto h-full flex flex-col">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

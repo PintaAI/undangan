@@ -11,20 +11,31 @@ export const weddingData = {
   },
   events: [
     {
-      title: "Akad",
-      time: "14:00 WIB",
-      venue: "Katedral St. Paul",
-      address: "123 Jalan Utama, Kota Anytown, Indonesia",
-      mapLink: "https://maps.google.com/...",
-      description: "Upacara akan dilaksanakan di luar ruangan. Mohon berpakaian sesuai."
+      title: "Akad Nikah",
+      time: "07.00 WIB",
+      venue: "Gedung Sasanagita",
+      address: "Tejosari, Parakan, Temanggung",
+      mapLink: "https://maps.app.goo.gl/9yTCxro8usPdSFB36?g_st=ic",
+      description: "Acara akad nikah akan dilaksanakan di Gedung Sasanagita",
+      side: "female"
     },
     {
       title: "Resepsi",
-      time: "17:00 WIB",
-      venue: "Ballroom Grand",
-      address: "456 Jalan Tinggi, Kota Anytown, Indonesia",
-      mapLink: "https://maps.google.com/...",
-      description: "Bergabunglah bersama kami untuk makan malam, minuman, dan tari-tarian!"
+      time: "10.00 WIB",
+      venue: "Gedung Sasanagita",
+      address: "Tejosari, Parakan, Temanggung",
+      mapLink: "https://maps.app.goo.gl/9yTCxro8usPdSFB36?g_st=ic",
+      description: "Acara resepsi akan dilaksanakan di Gedung Sasanagita",
+      side: "female"
+    },
+    {
+      title: "Ngunduh Mantu",
+      time: "Menunggu Konfirmasi",
+      venue: "Kediaman Mempelai Pria",
+      address: "Lokasi Pihak Pria",
+      mapLink: "#",
+      description: "Informasi lokasi dan waktu akan menyusul.",
+      side: "male"
     }
   ],
   gallery: {

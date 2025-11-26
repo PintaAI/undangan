@@ -11,6 +11,7 @@ import { Copy, Edit, Trash2, Plus, Check, X } from "lucide-react";
 interface Guest {
   id: string;
   name: string;
+  side?: 'male' | 'female';
   createdAt: string;
   updatedAt: string;
   blobUrl?: string;
@@ -24,7 +25,7 @@ export default function GuestManager() {
   const [success, setSuccess] = useState("");
   const [isAddingGuest, setIsAddingGuest] = useState(false);
   const [editingGuestId, setEditingGuestId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ name: "" });
+  const [formData, setFormData] = useState({ name: "", side: 'female' as 'male' | 'female' });
 
   useEffect(() => {
     fetchGuests();
@@ -70,14 +71,17 @@ export default function GuestManager() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name: formData.name.trim() }),
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          side: formData.side
+        }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
         setSuccess(editingGuestId ? 'Tamu berhasil diperbarui!' : 'Tamu berhasil ditambahkan!');
-        setFormData({ name: "" });
+        setFormData({ name: "", side: 'female' });
         setIsAddingGuest(false);
         setEditingGuestId(null);
         fetchGuests();
@@ -113,20 +117,24 @@ export default function GuestManager() {
   };
 
   const handleEdit = (guest: Guest) => {
-    setFormData({ name: guest.name });
+    setFormData({
+      name: guest.name,
+      side: guest.side || 'female'
+    });
     setEditingGuestId(guest.id);
     setIsAddingGuest(true);
   };
 
   const handleCancel = () => {
-    setFormData({ name: "" });
+    setFormData({ name: "", side: 'female' });
     setIsAddingGuest(false);
     setEditingGuestId(null);
   };
 
   const copyInvitationUrl = (guest: Guest) => {
     const baseUrl = window.location.origin;
-    const url = `${baseUrl}/?id=${encodeURIComponent(guest.id)}&name=${encodeURIComponent(guest.name)}`;
+    const sideParam = guest.side ? `&side=${encodeURIComponent(guest.side)}` : '';
+    const url = `${baseUrl}/?id=${encodeURIComponent(guest.id)}&name=${encodeURIComponent(guest.name)}${sideParam}`;
     
     navigator.clipboard.writeText(url).then(() => {
       setSuccess('URL undangan berhasil disalin!');
@@ -215,6 +223,35 @@ export default function GuestManager() {
                     required
                   />
                 </div>
+
+                <div className="space-y-2">
+                  <Label>Pihak Keluarga</Label>
+                  <div className="flex gap-4 pt-1">
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="side"
+                        value="female"
+                        checked={formData.side === 'female'}
+                        onChange={() => setFormData({ ...formData, side: 'female' })}
+                        className="w-4 h-4 text-primary"
+                      />
+                      <span>Pihak Wanita (Nina)</span>
+                    </label>
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="side"
+                        value="male"
+                        checked={formData.side === 'male'}
+                        onChange={() => setFormData({ ...formData, side: 'male' })}
+                        className="w-4 h-4 text-primary"
+                      />
+                      <span>Pihak Pria (Rores)</span>
+                    </label>
+                  </div>
+                </div>
+
                 <div className="flex gap-2">
                   <Button type="submit" className="flex items-center gap-2">
                     <Check className="w-4 h-4" />
@@ -250,8 +287,8 @@ export default function GuestManager() {
                   <tr>
                     <th className="text-left p-4 font-medium">ID Tamu</th>
                     <th className="text-left p-4 font-medium">Nama</th>
+                    <th className="text-left p-4 font-medium">Pihak</th>
                     <th className="text-left p-4 font-medium">Dibuat</th>
-                    <th className="text-left p-4 font-medium">Diperbarui</th>
                     <th className="text-left p-4 font-medium">Aksi</th>
                   </tr>
                 </thead>
@@ -266,11 +303,17 @@ export default function GuestManager() {
                     >
                       <td className="p-4 font-mono text-sm">{guest.id}</td>
                       <td className="p-4 font-medium">{guest.name}</td>
-                      <td className="p-4 text-sm text-muted-foreground">
-                        {new Date(guest.createdAt).toLocaleDateString()}
+                      <td className="p-4">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          guest.side === 'male'
+                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                            : 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300'
+                        }`}>
+                          {guest.side === 'male' ? 'Pihak Pria' : 'Pihak Wanita'}
+                        </span>
                       </td>
                       <td className="p-4 text-sm text-muted-foreground">
-                        {new Date(guest.updatedAt).toLocaleDateString()}
+                        {new Date(guest.createdAt).toLocaleDateString()}
                       </td>
                       <td className="p-4">
                         <div className="flex gap-2">
