@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from 'next/navigation';
 
 export default function EventDetails() {
@@ -48,12 +48,12 @@ export default function EventDetails() {
   const weddingMonth = weddingDateParts[1]; // Get the month name
   
   // Use dateCount from event data, fallback to weddingDay
-  const getCountTarget = (event: any): number => {
+  const getCountTarget = useCallback((event: { dateCount?: number }): number => {
     return event.dateCount || weddingDay;
-  };
+  }, [weddingDay]);
   
   // Get month display based on side
-  const getMonthDisplay = (event: any): string => {
+  const getMonthDisplay = (event: { time?: string }): string => {
     if (guestSide === 'male' && event.time) {
       // Extract month from time string for male side
       const dateParts = event.time.split(' ');
@@ -78,7 +78,7 @@ export default function EventDetails() {
   useEffect(() => {
     if (isInView && filteredEvents.length > 0) {
       // Initialize with random numbers for each card based on their respective targets
-      const initialCounts = filteredEvents.map((event, index) => {
+      const initialCounts = filteredEvents.map((event) => {
         const target = getCountTarget(event);
         return Math.floor(Math.random() * Math.max(target - 1, 1)) + 1;
       });
@@ -113,7 +113,7 @@ export default function EventDetails() {
         }
         setDisplayCounts(Array(filteredEvents.length).fill(0));
       }
-    }, [isInView, weddingDay, filteredEvents.length, guestSide]);
+    }, [isInView, weddingDay, filteredEvents.length, guestSide, filteredEvents, getCountTarget]);
 
   return (
     <section className="min-h-screen max-h-screen flex flex-col  py-8 px-4 sm:px-6">

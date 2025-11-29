@@ -277,16 +277,20 @@ export default function Rsvp() {
                               <div className="flex-1">
                                 <div className="flex items-center gap-2">
                                   {account.bankName.toLowerCase() === 'dana' && (
-                                    <img
+                                    <Image
                                       src="https://static.vecteezy.com/system/resources/previews/028/766/359/non_2x/dana-payment-icon-symbol-free-png.png"
                                       alt="Dana"
+                                      width={32}
+                                      height={32}
                                       className="h-8 w-auto"
                                     />
                                   )}
                                   {account.bankName.toLowerCase() === 'bri' && (
-                                    <img
+                                    <Image
                                       src="https://upload.wikimedia.org/wikipedia/commons/0/02/Bank_BRI_2000.svg"
                                       alt="BRI"
+                                      width={32}
+                                      height={32}
                                       className="h-8 w-auto"
                                     />
                                   )}
@@ -327,9 +331,11 @@ export default function Rsvp() {
                           />
                         </div>
                         <div className="flex items-center gap-1.5 mt-1">
-                          <img
+                          <Image
                             src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
                             alt="WhatsApp"
+                            width={16}
+                            height={16}
                             className="w-4 h-4"
                           />
                           <span className="text-sm font-semibold text-green-800">Chat Nina</span>
@@ -351,9 +357,11 @@ export default function Rsvp() {
                           />
                         </div>
                         <div className="flex items-center gap-1.5 mt-1">
-                          <img
+                          <Image
                             src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
                             alt="WhatsApp"
+                            width={16}
+                            height={16}
                             className="w-4 h-4"
                           />
                           <span className="text-sm font-semibold text-green-800">Chat Rores</span>
