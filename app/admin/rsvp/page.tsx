@@ -3,21 +3,24 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CardWithCorners, CardContent, CardHeader } from "@/components/ui/card-with-corners";
-import { Users, CalendarCheck, CalendarX, MessageSquare, RefreshCw } from "lucide-react";
+import { Users, CalendarCheck, CalendarX, MessageSquare, RefreshCw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface RsvpData {
+  id: string;
   fullName: string;
   attendance: string;
   message: string;
   submittedAt: string;
   uploadedAt: string;
+  blobUrl: string;
 }
 
 export default function AdminRsvpPage() {
   const [rsvps, setRsvps] = useState<RsvpData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const fetchRsvps = async () => {
     setLoading(true);
@@ -36,6 +39,30 @@ export default function AdminRsvpPage() {
       setError('Network error. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (rsvpId: string) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus RSVP ini?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/rsvp/${rsvpId}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess('RSVP berhasil dihapus!');
+        fetchRsvps();
+      } else {
+        setError(data.error || 'Gagal menghapus RSVP');
+      }
+    } catch (err) {
+      console.error('Error deleting RSVP:', err);
+      setError('Terjadi kesalahan jaringan. Silakan coba lagi.');
     }
   };
 
@@ -122,7 +149,13 @@ export default function AdminRsvpPage() {
           </Button>
         </div>
 
-        {/* Error Message */}
+        {/* Success/Error Messages */}
+        {success && (
+          <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg p-4 mb-6">
+            {success}
+          </div>
+        )}
+
         {error && (
           <div className="bg-destructive/10 border border-destructive/20 text-destructive rounded-lg p-4 mb-6">
             {error}
@@ -159,15 +192,26 @@ export default function AdminRsvpPage() {
                     <h3 className="text-lg font-semibold text-foreground">
                       {rsvp.fullName}
                     </h3>
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        rsvp.attendance === 'attending'
-                          ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                          : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-                      }`}
-                    >
-                      {rsvp.attendance === 'attending' ? 'Hadir' : 'Tidak Hadir'}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          rsvp.attendance === 'attending'
+                            ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                            : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                        }`}
+                      >
+                        {rsvp.attendance === 'attending' ? 'Hadir' : 'Tidak Hadir'}
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDelete(rsvp.id)}
+                        className="flex items-center gap-1 text-destructive hover:text-destructive hover:bg-destructive/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Hapus
+                      </Button>
+                    </div>
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Submitted: {new Date(rsvp.submittedAt).toLocaleString('id-ID', {

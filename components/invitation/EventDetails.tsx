@@ -1,6 +1,7 @@
 "use client"
 import { weddingData } from "@/lib/data";
-import { Clock, MapPin, } from "lucide-react";
+import { Clock, MapPin, Map } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   CardWithCorners,
   CardContent,
@@ -45,6 +46,23 @@ export default function EventDetails() {
   const weddingDateParts = weddingData.weddingDate.split(' ');
   const weddingDay = parseInt(weddingDateParts[0]);
   const weddingMonth = weddingDateParts[1]; // Get the month name
+  
+  // Use dateCount from event data, fallback to weddingDay
+  const getCountTarget = (event: any): number => {
+    return event.dateCount || weddingDay;
+  };
+  
+  // Get month display based on side
+  const getMonthDisplay = (event: any): string => {
+    if (guestSide === 'male' && event.time) {
+      // Extract month from time string for male side
+      const dateParts = event.time.split(' ');
+      if (dateParts.length >= 2) {
+        return dateParts[1];
+      }
+    }
+    return weddingMonth;
+  };
   const [displayCounts, setDisplayCounts] = useState<number[]>([]);
   const currentCountsRef = useRef<number[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -59,18 +77,20 @@ export default function EventDetails() {
 
   useEffect(() => {
     if (isInView && filteredEvents.length > 0) {
-      // Initialize with random numbers for each card
-      const initialCounts = Array(filteredEvents.length).fill(0).map(() =>
-        Math.floor(Math.random() * (weddingDay - 1)) + 1
-      );
+      // Initialize with random numbers for each card based on their respective targets
+      const initialCounts = filteredEvents.map((event, index) => {
+        const target = getCountTarget(event);
+        return Math.floor(Math.random() * Math.max(target - 1, 1)) + 1;
+      });
       currentCountsRef.current = initialCounts;
       setDisplayCounts(initialCounts);
 
       // Start the interval
       intervalRef.current = setInterval(() => {
         let allDone = true;
-        const newCounts = currentCountsRef.current.map(count => {
-          if (count < weddingDay) {
+        const newCounts = currentCountsRef.current.map((count, index) => {
+          const target = getCountTarget(filteredEvents[index]);
+          if (count < target) {
             allDone = false;
             return count + 1;
           }
@@ -93,7 +113,7 @@ export default function EventDetails() {
         }
         setDisplayCounts(Array(filteredEvents.length).fill(0));
       }
-    }, [isInView, weddingDay, filteredEvents.length]);
+    }, [isInView, weddingDay, filteredEvents.length, guestSide]);
 
   return (
     <section className="min-h-screen max-h-screen flex flex-col  py-8 px-4 sm:px-6">
@@ -145,7 +165,7 @@ export default function EventDetails() {
                   {displayCounts[index]}
                 </div>
                 <div className="text-base sm:text-lg font-medium text-muted-foreground mt-0">
-                  {weddingMonth}
+                  {getMonthDisplay(event)}
                 </div>
               </motion.div>
               <motion.div
@@ -210,17 +230,29 @@ export default function EventDetails() {
                     ease: "easeOut"
                   }}
                 >
-                  <MapPin className="w-4 sm:w-5 h-4 sm:h-5 text-primary mt-1" />
-                  <div>
-                    <p className="font-medium text-foreground text-sm sm:text-base">{event.venue}</p>
-                    <Link
-                      href={event.mapLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors duration-200 underline"
-                    >
-                      {event.address}
-                    </Link>
+                  <MapPin className="w-4 sm:w-5 h-4 sm:h-5 text-primary mt-1 shrink-0" />
+                  <div className="flex flex-col items-start gap-2">
+                    <div>
+                      <p className="font-medium text-foreground text-sm sm:text-base">{event.venue}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{event.address}</p>
+                    </div>
+                    {event.mapLink && event.mapLink !== "#" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 text-xs gap-2 border-primary/20 hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
+                        asChild
+                      >
+                        <Link
+                          href={event.mapLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Map className="w-3.5 h-3.5" />
+                          Google Maps
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 </motion.div>
                 

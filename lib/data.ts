@@ -17,7 +17,8 @@ export const weddingData = {
       address: "Tejosari, Parakan, Temanggung",
       mapLink: "https://maps.app.goo.gl/9yTCxro8usPdSFB36?g_st=ic",
       description: "Acara akad nikah akan dilaksanakan di Gedung Sasanagita",
-      side: "female"
+      side: "female",
+      dateCount: 14
     },
     {
       title: "Resepsi",
@@ -26,16 +27,18 @@ export const weddingData = {
       address: "Tejosari, Parakan, Temanggung",
       mapLink: "https://maps.app.goo.gl/9yTCxro8usPdSFB36?g_st=ic",
       description: "Acara resepsi akan dilaksanakan di Gedung Sasanagita",
-      side: "female"
+      side: "female",
+      dateCount: 14
     },
     {
       title: "Ngunduh Mantu",
-      time: "Menunggu Konfirmasi",
+      time: "16 Desember 2025",
       venue: "Kediaman Mempelai Pria",
       address: "Lokasi Pihak Pria",
       mapLink: "#",
       description: "Informasi lokasi dan waktu akan menyusul.",
-      side: "male"
+      side: "male",
+      dateCount: 16
     }
   ],
   gallery: {
@@ -50,6 +53,22 @@ export const weddingData = {
   rsvp: {
     title: "RSPV",
     formEndpoint: "/api/rsvp"
+  },
+  bankInfo: {
+    title: "Info Rekening",
+    description: "Bagi yang berhalangan hadir, dapat mengirimkan hadiah melalui transfer ke rekening berikut:",
+    accounts: [
+      {
+        bankName: "BRI",
+        accountNumber: "026201046667509",
+        accountName: "qurotha ayunina"
+      },
+      {
+        bankName: "Dana",
+        accountNumber: "081431349719",
+        accountName: "qurotha ayunina"
+      }
+    ]
   }
 };
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { weddingData } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { CardWithCorners, CardContent, CardHeader,} from "@/components/ui/card-with-corners";
@@ -9,8 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { CalendarCheck, MessageSquare, Heart, User } from "lucide-react";
+import { CalendarCheck, MessageSquare, Heart, User, CreditCard, Copy } from "lucide-react";
 import { useSearchParams } from 'next/navigation';
+import Image from "next/image";
 
 interface RsvpComment {
   fullName: string;
@@ -36,6 +37,7 @@ export default function Rsvp() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [comments, setComments] = useState<RsvpComment[]>([]);
+  const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -45,6 +47,15 @@ export default function Rsvp() {
     }));
   };
 
+  const copyToClipboard = async (text: string, accountName: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedAccount(accountName);
+      setTimeout(() => setCopiedAccount(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -238,6 +249,121 @@ export default function Rsvp() {
                 </RadioGroup>
               </div>
 
+              {/* Bank Information & WhatsApp Buttons - Show only when "Tidak Hadir" is selected */}
+              <AnimatePresence>
+                {formData.attendance === 'not-attending' && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4"
+                  >
+                    {/* Bank Information */}
+                    <div className="space-y-3 p-4 bg-primary/5 rounded-lg border border-primary/20">
+                      <div className="flex items-center gap-2 mb-3">
+                        <CreditCard className="h-5 w-5 text-primary" />
+                        <h4 className="text-sm font-semibold text-foreground">
+                          {weddingData.bankInfo.title}
+                        </h4>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        {weddingData.bankInfo.description}
+                      </p>
+                      <div className="space-y-2">
+                        {weddingData.bankInfo.accounts.map((account, index) => (
+                          <div key={index} className="bg-background/50 p-3 rounded-md border border-border/50">
+                            <div className="flex justify-between items-center">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  {account.bankName.toLowerCase() === 'dana' && (
+                                    <img
+                                      src="https://static.vecteezy.com/system/resources/previews/028/766/359/non_2x/dana-payment-icon-symbol-free-png.png"
+                                      alt="Dana"
+                                      className="h-8 w-auto"
+                                    />
+                                  )}
+                                  {account.bankName.toLowerCase() === 'bri' && (
+                                    <img
+                                      src="https://upload.wikimedia.org/wikipedia/commons/0/02/Bank_BRI_2000.svg"
+                                      alt="BRI"
+                                      className="h-8 w-auto"
+                                    />
+                                  )}
+                                  <p className="text-sm font-medium text-foreground">{account.bankName}</p>
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">a.n. {account.accountName}</p>
+                                <p className="text-sm font-mono text-primary mt-1">{account.accountNumber}</p>
+                              </div>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => copyToClipboard(account.accountNumber, account.accountName)}
+                                className="ml-2 flex items-center gap-1 text-xs h-7 px-2"
+                              >
+                                <Copy className="w-3 h-3" />
+                                {copiedAccount === account.accountName ? 'Disalin!' : 'Salin'}
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* WhatsApp Buttons for Private Message */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <a
+                        href="https://wa.me/6281331249719"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex flex-col items-center p-3 bg-green-50 rounded-xl border-2 border-green-200 hover:border-green-400 hover:bg-green-100 transition-all cursor-pointer"
+                      >
+                        <div className="relative w-16 h-16 mb-2 transition-transform group-hover:scale-110">
+                          <Image
+                            src="/character/nina-card.png"
+                            alt="Nina"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                        <div className="flex items-center gap-1.5 mt-1">
+                          <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                            alt="WhatsApp"
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm font-semibold text-green-800">Chat Nina</span>
+                        </div>
+                      </a>
+                      
+                      <a
+                        href="https://wa.me/6285728212056"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex flex-col items-center p-3 bg-green-50 rounded-xl border-2 border-green-200 hover:border-green-400 hover:bg-green-100 transition-all cursor-pointer"
+                      >
+                        <div className="relative w-16 h-16 mb-2 transition-transform group-hover:scale-110">
+                          <Image
+                            src="/character/rores-card.png"
+                            alt="Rores"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                        <div className="flex items-center gap-1.5 mt-1">
+                          <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                            alt="WhatsApp"
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm font-semibold text-green-800">Chat Rores</span>
+                        </div>
+                      </a>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {/* Message to Couple */}
               <div className="space-y-1.5">
                 <Label htmlFor="message" className="text-sm font-medium text-foreground">
@@ -268,7 +394,7 @@ export default function Rsvp() {
                   disabled={isSubmitting}
                   className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
-                  {isSubmitting ? 'Mengirim...' : 'Submit RSVP'}
+                  {isSubmitting ? 'Mengirim...' : 'Kirim'}
                 </Button>
               </div>
             </form>

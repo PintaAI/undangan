@@ -15,8 +15,11 @@ export async function GET() {
         try {
           const response = await fetch(blob.url);
           const data = await response.json();
+          // Extract unique ID from the blob pathname
+          const id = blob.pathname.replace('rsvp-', '').replace('.json', '');
           return {
             ...data,
+            id,
             blobUrl: blob.url,
             uploadedAt: blob.uploadedAt,
           };

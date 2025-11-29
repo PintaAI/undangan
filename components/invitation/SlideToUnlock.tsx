@@ -143,10 +143,10 @@ export default function SlideToUnlock({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-end justify-center bg-gradient-to-b from-primary/80 to-black/20 transition-all ease-in ${
+      className={`fixed inset-0 z-50 flex items-end justify-center bg-gradient-to-b from-primary/90 to-black/90 transition-all ease-in ${
         isFading
           ? 'opacity-0 backdrop-blur-none'
-          : 'opacity-100 backdrop-blur-sm'
+          : 'opacity-100 backdrop-blur-md'
       } ${className}`}
       style={{ transitionDuration: `${UNLOCK_DURATION}ms` }}
     >
@@ -187,7 +187,7 @@ export default function SlideToUnlock({
         <h2 className="text-xl font-serif font-bold text-gray-100 mb-2">
           Buka undangan
         </h2>
-        <p className="text-sm text-gray-600 mb-6">
+        <p className="text-sm text-gray-300 mb-6">
           Geser tombol ke kanan untuk melihat undangan
         </p>
 
