@@ -164,11 +164,11 @@ export default function SlideToUnlock({
           
           <div className="flex flex-col items-center justify-center mb-4">
             <Mail className="w-8 h-8 text-white mb-2" />
-            <h1 className="text-4xl md:text-4xl font-bold text-white drop-shadow-lg">
+            <h1 className="text-4xl md:text-4xl font-serif font-bold text-white drop-shadow-lg">
               Wedding Invitation
             </h1>
           </div>
-          <div className="text-xl md:text-2xl text-blue-100 font-light flex flex-col items-center">
+          <div className="text-xl md:text-2xl text-blue-100 font-light font-serif flex flex-col items-center">
             <div className="inline-block">
               <p className="mb-1">Dear, {guestName}</p>
               <div className="h-1 bg-white/30 rounded-full" style={{ width: '100%' }}></div>
@@ -184,7 +184,7 @@ export default function SlideToUnlock({
         animate={{ y: isFading ? 100 : 0, opacity: isFading ? 0 : 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <h2 className="text-xl font-bold text-gray-100 mb-2">
+        <h2 className="text-xl font-serif font-bold text-gray-100 mb-2">
           Buka undangan
         </h2>
         <p className="text-sm text-gray-600 mb-6">

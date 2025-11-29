@@ -99,7 +99,7 @@ export default function EventDetails() {
     <section className="min-h-screen max-h-screen flex flex-col  py-8 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto w-full">
         <motion.h2
-          className="text-3xl sm:text-4xl font-bold text-center text-foreground mb-4"
+          className="text-3xl sm:text-4xl font-serif font-bold text-center text-foreground mb-4"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ amount: 0.3 }}
@@ -178,7 +178,7 @@ export default function EventDetails() {
                     ease: "easeOut"
                   }}
                 >
-                  <CardTitle className="text-xl ml-2 sm:text-2xl font-semibold">
+                  <CardTitle className="text-xl ml-2 sm:text-2xl font-serif font-semibold">
                     {event.title}
                   </CardTitle>
                 </motion.div>

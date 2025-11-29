@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
-import { Pixelify_Sans, Rubik_Pixels } from "next/font/google";
+import { Playfair_Display, Great_Vibes, Lato } from "next/font/google";
 import "./globals.css";
 
-const pixelifySans = Pixelify_Sans({
+const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-serif",
   display: "swap",
 });
 
-const rubikPixels = Rubik_Pixels({
+const greatVibes = Great_Vibes({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-pixels",
+  variable: "--font-cursive",
+  display: "swap",
+});
+
+const lato = Lato({
+  weight: ["300", "400", "700"],
+  subsets: ["latin"],
+  variable: "--font-sans",
   display: "swap",
 });
 
@@ -26,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${pixelifySans.variable} ${rubikPixels.variable}`}>
+    <html lang="en" className={`${playfairDisplay.variable} ${greatVibes.variable} ${lato.variable}`}>
       <body className="font-sans antialiased bg-[#bbc1e8]">
         {children}
       </body>

@@ -76,7 +76,7 @@ export async function POST(request: Request) {
     }
 
     // Save new config
-    const blob = await put(CONFIG_FILENAME, JSON.stringify(body, null, 2), {
+    await put(CONFIG_FILENAME, JSON.stringify(body, null, 2), {
       access: 'public',
       contentType: 'application/json',
     });

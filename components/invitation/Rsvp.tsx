@@ -122,7 +122,7 @@ export default function Rsvp() {
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
           <motion.h2
-            className="text-2xl md:text-3xl font-bold text-foreground mb-3"
+            className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-3"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
@@ -166,7 +166,7 @@ export default function Rsvp() {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <motion.h2
-            className="text-2xl md:text-3xl font-bold text-foreground"
+            className="text-2xl md:text-3xl font-serif font-bold text-foreground"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ amount: 0.3 }}
@@ -296,7 +296,7 @@ export default function Rsvp() {
                 <div className="flex justify-center mb-3">
                   <Heart className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                <h3 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-2">
                   Ucapan & Doa
                 </h3>
                 <p className="text-muted-foreground">

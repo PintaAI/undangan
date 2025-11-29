@@ -20,9 +20,6 @@ interface Event {
   side: "male" | "female";
 }
 
-interface ConfigData {
-  events: Event[];
-}
 
 export default function EventManager() {
   const [events, setEvents] = useState<Event[]>([]);

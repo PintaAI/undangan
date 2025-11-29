@@ -170,7 +170,7 @@ export const AnimatedTestimonials = ({
             }}
             className="text-center md:text-left"
           >
-            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-black dark:text-white mb-2">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-serif font-bold text-black dark:text-white mb-2">
               {testimonials[active].name}
             </h3>
 

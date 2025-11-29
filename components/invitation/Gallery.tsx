@@ -38,7 +38,7 @@ export default function Gallery() {
           className="text-center flex-shrink-0 mb-6 sm:mb-8 lg:mb-12"
         >
           <motion.h2
-            className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2 sm:mb-4"
+            className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-foreground mb-2 sm:mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ amount: 0.3 }}

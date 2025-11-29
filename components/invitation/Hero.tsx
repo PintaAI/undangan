@@ -103,7 +103,7 @@ export default function Hero() {
   return (
     <div className="h-screen flex flex-col items-center bg-gradient-to-b from-primary via-white to-transparent relative overflow-hidden">
       <div className="mt-10">
-        <h2 className="text-4xl font-bold text-[#020b49]">Wedding invite</h2>
+        <h2 className="text-4xl font-serif text-[#020b49]">Wedding invite</h2>
       </div>
 
       {/* Cloud looping in background - slower parallax effect */}
