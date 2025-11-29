@@ -94,7 +94,7 @@ const Parallax = ({ title = "add text here" }: ParallaxProps) => {
           وَالَّذِيْنَ يَقُوْلُوْنَ رَبَّنَا هَبْ لَنَا مِنْ اَزْوَاجِنَا وَذُرِّيّٰتِنَا قُرَّةَ اَعْيُنٍ وَّاجْعَلْنَا لِلْمُتَّقِيْنَ اِمَامًا
         </p>
         <p className="text-white text-sm md:text-base font-light font-serif px-8 mx-4 py-2 rounded-lg backdrop-blur-sm" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
-       &ldquo;Dan orang-orang yang berkata, 'Ya Tuhan kami, anugerahkanlah kepada kami pasangan kami dan keturunan kami sebagai penyenang hati (kami), dan jadikanlah kami pemimpin bagi orang-orang yang bertakwa'.&rdquo;
+       &ldquo;Dan orang-orang yang berkata, &apos;Ya Tuhan kami, anugerahkanlah kepada kami pasangan kami dan keturunan kami sebagai penyenang hati (kami), dan jadikanlah kami pemimpin bagi orang-orang yang bertakwa&apos;.&rdquo;
 
 
         </p>
