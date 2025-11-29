@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useSearchParams } from 'next/navigation';
 
 export default function EventDetails() {
@@ -38,9 +38,9 @@ export default function EventDetails() {
   }, []);
 
   // Filter events based on guest side
-  const filteredEvents = events.filter(event =>
+  const filteredEvents = useMemo(() => events.filter(event =>
     !event.side || event.side === guestSide
-  );
+  ), [events, guestSide]);
 
   // Extract day and month from wedding date (e.g., "14 Desember 2025" -> day: 14, month: "Desember")
   const weddingDateParts = weddingData.weddingDate.split(' ');
@@ -113,7 +113,13 @@ export default function EventDetails() {
         }
         setDisplayCounts(Array(filteredEvents.length).fill(0));
       }
-    }, [isInView, weddingDay, filteredEvents.length, guestSide, filteredEvents, getCountTarget]);
+
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+        }
+      };
+    }, [isInView, filteredEvents, getCountTarget]);
 
   return (
     <section className="min-h-screen max-h-screen flex flex-col  py-8 px-4 sm:px-6">
